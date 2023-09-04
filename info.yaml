@@ -71,5 +71,5 @@ documentation:
   external_hw:  "5-bit R-2R DAC, USB breakout PCB or I2S source"      # Describe any external hardware needed
   discord:      "xkolar74_10263"      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
   doc_link:     "https://github.com/jankralx/tt04-fm-transmitter/blob/main/README.md"      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     60M (48M)       # Clock frequency in Hz (if required)
-  picture:      "src/diagram.pdf"      # relative path to a picture in your repository (must be 512kb or less)
+  clock_hz:     60000000       # Clock frequency in Hz (if required)
+  picture:      "src/diagram.png"      # relative path to a picture in your repository (must be 512kb or less)
