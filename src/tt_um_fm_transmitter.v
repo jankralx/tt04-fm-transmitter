@@ -1,6 +1,6 @@
 `default_nettype none
 
-module tt_fm_transmitter #( 
+module tt_um_fm_transmitter #( 
 ) (
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
@@ -39,9 +39,9 @@ module tt_fm_transmitter #(
     wire i2s_dvalid;
 
     // connect I2S signals to output for debugging
-    assign i2s_clk_o = i2s_clk;
-    assign i2s_din_o = i2s_din;
-    assign i2s_ws_o = i2s_ws;
+    //assign i2s_clk_o = i2s_clk;
+    //assign i2s_din_o = i2s_din;
+    //assign i2s_ws_o = i2s_ws;
 
     
     i2s_rx #(
@@ -51,7 +51,7 @@ module tt_fm_transmitter #(
         .i2s_din(i2s_din),
         .i2s_ws(i2s_ws),
         .chan_sel(chan_sel),
-        .ws_align(0),
+        .ws_align(1'b0),
         .dout(i2s_audio),
         .dvalid(i2s_dvalid)
     );
@@ -79,7 +79,7 @@ module tt_fm_transmitter #(
         .A(A),
         .D(D)
     ) fm_modulator_inst (
-        .clk(clk_50),
+        .clk(clk),
         .audio(audio),
         .rf(rf)
     );

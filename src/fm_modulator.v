@@ -21,8 +21,8 @@ module fm_modulator
 
     
     // debug print of constants and actual frequencies
-    real F_C_ACTUAL = F_S * ACC_INC / 2**N;
-    real DF_ACTUAL = F_S * DF_INC / 2**N;
+    // real F_C_ACTUAL = F_S * ACC_INC / 2**N;
+    // real DF_ACTUAL = F_S * DF_INC / 2**N;
     initial begin
         $display("Current parameters:");
         $display("F_S = %d", F_S);
@@ -30,8 +30,8 @@ module fm_modulator
         $display("DF = %d", DF);
         $display("ACC_INC = %d", ACC_INC);
         $display("DF_INC = %d", DF_INC);
-        $display("F_C_ACTUAL = %f", F_C_ACTUAL);
-        $display("DF_ACTUAL = %f", DF_ACTUAL);
+        //$display("F_C_ACTUAL = %f", F_C_ACTUAL);
+        //$display("DF_ACTUAL = %f", DF_ACTUAL);
     end
 
     reg [N-1:0] phase_acc = 0;
