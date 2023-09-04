@@ -22,54 +22,54 @@ yaml_version: 4
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation: 
-  author:       "Jan Kral, Ondrej Kolar"             # Your name
-  title:        "FM Transmitter"                     # Project title
-  language:     "Verilog"                            # other examples include Verilog, Amaranth, VHDL, etc
-  description:  "FM transmitter with I2S input"      # Short description of what your project does
+  author:       "Jan Kral, Ondrej Kolar"               # Your name
+  title:        "FM Transmitter"                       # Project title
+  language:     "Verilog"                              # other examples include Verilog, Amaranth, VHDL, etc
+  description:  "FM transmitter with USB or I2S input" # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
-      Explain how your project works
+    TODO: How the modulation, higher Nyquist zone and R-2R DAC work
 
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-      Explain how to test your project
+    TODO: HW description, schematic, how to make it work
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
+    - I2S SCK
+    - I2S Din
+    - I2S WS
+    - I2S Format select
+    - Audio channel select
+    - Audio source select
     - none
     - none
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
-    - segment a
-    - segment b
-    - segment c
-    - segment d
-    - segment e
-    - segment f
-    - segment g
-    - dot
+    - DAC[4] (MSB)
+    - DAC[3]
+    - DAC[2]
+    - DAC[1]
+    - DAC[0] (LSB)
+    - none
+    - none
+    - USB Active
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
-    - none
+    - USB DP (inout)
+    - USB DN (inout)
+    - USB DP pullup (out)
+    - SPI SCLK (in)
+    - SPI MOSI (in)
+    - SPI MISO (out)
+    - SPI CS (in)
     - none
 
 # The following fields are optional
-  tag:          ""      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
-  external_hw:  ""      # Describe any external hardware needed
-  discord:      ""      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     0       # Clock frequency in Hz (if required)
-  picture:      ""      # relative path to a picture in your repository (must be 512kb or less)
+  tag:          "fm, modulator, audio, music, usb, i2s"      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
+  external_hw:  "5-bit R-2R DAC, USB breakout PCB or I2S source"      # Describe any external hardware needed
+  discord:      "xkolar74_10263"      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
+  doc_link:     "https://github.com/jankralx/tt04-fm-transmitter/blob/main/README.md"      # URL to longer form documentation, eg the README.md in your repository
+  clock_hz:     60M (48M)       # Clock frequency in Hz (if required)
+  picture:      "src/diagram.pdf"      # relative path to a picture in your repository (must be 512kb or less)
