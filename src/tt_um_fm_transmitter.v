@@ -120,8 +120,11 @@ module tt_um_fm_transmitter #(
     wire [D-1:0] rf;
 
     fm_modulator #(
-        .A(A),
-        .D(D)
+        .A(A),      // number of bits in audio signal
+        .L(L),      // number of bits of frequency deviation increment
+        .N(N),      // number of bits in phase accumulator
+        .M(M),      // number of bits in sine generator
+        .D(D)       // number of bits in FM modulator and DAC
     ) fm_modulator_inst (
         .clk(clk),
         .audio(audio),

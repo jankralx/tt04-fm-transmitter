@@ -41,7 +41,7 @@ module fm_modulator
     reg [R-1:0] phase_ra = 0;
 
     // solve sign of output and phase_r orientation based on quadrant
-    always @* begin
+    always @(quadrant or phase_r) begin
         if (quadrant == 0 || quadrant == 1) begin
             out_negative = 0;
         end else begin
@@ -65,7 +65,7 @@ module fm_modulator
 
     wire [1:0] phase_int = phase_ra[R-1:R-2];
     reg [D-2:0] fm_fun;
-    always @* begin
+    always @(phase_int or phase_ra) begin
         if (phase_int == 0) begin
             fm_fun = 2*phase_ra[R-1:R-D+1];
         end else if (phase_int == 1 || phase_int == 2) begin
