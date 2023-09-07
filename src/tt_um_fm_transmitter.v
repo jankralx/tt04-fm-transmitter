@@ -67,10 +67,6 @@ module tt_um_fm_transmitter #(
     assign uio_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
     assign uio_oe[7] = ~spi_csn;     // MISO is driven only when spi_csn == 0, otherwise as input (Hi-Z)
 
-    // unused outputs
-    assign uio_oe = 0;
-    assign uio_out = 0;
-
     ///////////////////////////////////////////////////////////////////////////
     // Invertor for reset
     ///////////////////////////////////////////////////////////////////////////
@@ -134,7 +130,7 @@ module tt_um_fm_transmitter #(
     );
 
     // selected output bits of DAC are enabled only if ena == 1
-    assign dac = rf & dac_ena & {$size(dac){ena}};
+    assign dac = rf & dac_ena & {D{ena}};
 
     ///////////////////////////////////////////////////////////////////////////
     // SPI configuration core

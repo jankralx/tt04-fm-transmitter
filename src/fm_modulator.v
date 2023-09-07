@@ -6,11 +6,7 @@ module fm_modulator
     parameter L   = 12,        // number of bits of frequency deviation increment
     parameter N   = 18,        // number of bits in phase accumulator
     parameter M   = 14,        // number of bits going to sine generator
-    parameter D   = 5,         // number of bits in FM modulator and DAC
-    parameter F_S = 50000000,  // sampling frequency
-    parameter F_C = 10000000,  // carrier frequency
-    parameter DF  = 75000      // frequency deviation
-
+    parameter D   = 5          // number of bits in FM modulator and DAC
 )(
     input wire clk,
     input wire signed [A-1:0] audio,  // audio signal in 2's complement
@@ -41,7 +37,7 @@ module fm_modulator
     reg [R-1:0] phase_ra = 0;
 
     // solve sign of output and phase_r orientation based on quadrant
-    always @(quadrant or phase_r) begin
+    always @* begin
         if (quadrant == 0 || quadrant == 1) begin
             out_negative = 0;
         end else begin
@@ -65,7 +61,7 @@ module fm_modulator
 
     wire [1:0] phase_int = phase_ra[R-1:R-2];
     reg [D-2:0] fm_fun;
-    always @(phase_int or phase_ra) begin
+    always @* begin
         if (phase_int == 0) begin
             fm_fun = 2*phase_ra[R-1:R-D+1];
         end else if (phase_int == 1 || phase_int == 2) begin

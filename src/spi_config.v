@@ -16,7 +16,7 @@ module spi_config #(
     input wire spi_clk,
     input wire spi_csn,
     input wire spi_mosi,
-    output reg spi_miso,
+    output wire spi_miso,
 
     // pin configuration inputs
     input wire usb_i2sn_pin,
@@ -126,15 +126,16 @@ module spi_config #(
     // MISO signal needs to be registered with negative clock edge
     ///////////////////////////////////////////////////////////////////////////
     // negative edge senstive flip-flop with asynchronous reset
-    wire spi_clk_n = ~spi_clk;
-    always @(posedge spi_clk or posedge spi_csn) begin
-        // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
-        // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
-        if (spi_csn)
-            spi_miso <= shift_reg[DW-1];
-        else
-            spi_miso <= shift_reg[DW-1];
-    end
+    //wire spi_clk_n = ~spi_clk;
+    // always @(posedge spi_clk or posedge spi_csn) begin
+    //     // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
+    //     // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
+    //     if (spi_csn)
+    //         spi_miso <= shift_reg[DW-1];
+    //     else
+    //         spi_miso <= shift_reg[DW-1];
+    // end
+    assign spi_miso = shift_reg[DW-1];
 
     ///////////////////////////////////////////////////////////////////////////
     // output assignments
@@ -152,9 +153,9 @@ module spi_config #(
     // otherwise value from latch register (default if not set by SPI)
     always @* begin
         if (spi_override == 1'b0 && dith_disable_pin == 1'b1) begin
-            dith_fact <= 3'b0;
+            dith_fact = 3'b0;
         end else begin
-            dith_fact <= latch_reg[2+DITH_FACT_POS:DITH_FACT_POS];
+            dith_fact = latch_reg[2+DITH_FACT_POS:DITH_FACT_POS];
         end
     end
 
