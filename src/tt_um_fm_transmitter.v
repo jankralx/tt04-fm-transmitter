@@ -106,7 +106,7 @@ module tt_um_fm_transmitter #(
 
     cdc_slow2fast_bus #(
         .DW(A)
-    ) dut (
+    ) cdc_audio_data (
         .src_clk(i2s_clk),
         .src_data(audio_src),
         .src_dv(i2s_dvalid),
@@ -145,7 +145,7 @@ module tt_um_fm_transmitter #(
         .F_S(F_S),  // default clock frequency
         .F_C(F_C),  // default carrier frequency
         .DF(DF)     // default frequency deviation
-    ) dut(
+    ) spi_config_inst (
         .rst(rst),
         .spi_clk(spi_clk),
         .spi_csn(spi_csn),
