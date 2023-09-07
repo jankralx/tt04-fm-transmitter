@@ -106,7 +106,7 @@ module spi_config #(
             shift_reg <= {shift_reg[DW-2:0], spi_mosi};
         end
     end
-/*
+
     // originally there was a latch register activated with CSn,
     // but it complicated the reset, so we stay for now without any
     // protection during config
@@ -115,9 +115,9 @@ module spi_config #(
 
     // output latch
     // reg [DW-1:0] latch_reg = {DW{1'b0}};
-    // always @(spi_csn or shift_reg) begin
+    // always @* begin
     //     if (spi_csn == 1'b0)
-    //         latch_reg <= shift_reg;
+    //         latch_reg = shift_reg;
     // end
 
     wire [DW-1:0] latch_reg = shift_reg;
@@ -149,6 +149,7 @@ module spi_config #(
     assign df_inc = latch_reg[L-1+DF_INC_POS:DF_INC_POS];
     assign dac_ena = latch_reg[D-1+DAC_ENA_POS:DAC_ENA_POS];
 
+    /*
     // ** dith_fact **
     // disable dithering when disable pin is high and SPI override is not set
     // otherwise value from latch register (default if not set by SPI)
@@ -159,26 +160,14 @@ module spi_config #(
             dith_fact = latch_reg[2+DITH_FACT_POS:DITH_FACT_POS];
         end
     end
-
+*/
     // if spi_override is not set, pin value is taken
     assign usb_i2sn = spi_override == 1'b1 ? latch_reg[USB_I2SN_POS] : usb_i2sn_pin;
     assign audio_chan_sel = spi_override == 1'b1 ? latch_reg[AUDIO_CHAN_SEL_POS] : audio_chan_sel_pin;
     assign i2s_ws_align = spi_override == 1'b1 ? latch_reg[I2S_WS_ALIGN] : i2s_ws_align_pin;
-*/
-
-    assign spi_miso = 1'b0;
-
-    // configuration values
-    assign acc_inc = 0;
-    assign df_inc = 0;
-    assign dac_ena = 0;
 
     always @(posedge spi_clk) begin
         dith_fact <= 0;
     end
-
-    assign usb_i2sn = shift_reg[0];
-    assign audio_chan_sel = shift_reg[DW-1];
-    assign i2s_ws_align = 0;
 
 endmodule
