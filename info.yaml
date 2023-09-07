@@ -9,6 +9,8 @@ project:
     - fm_modulator.v
     - i2s_rx.v
     - tt_um_fm_transmitter.v
+    - cdc_slow2fast_bus.v
+    - spi_config.v
   top_module:  "tt_um_fm_transmitter"      # Put the name of your top module here, must start with "tt_um_". Make it unique by including your github username
 
 # How many tiles your design occupies? A single tile is about 167x108 uM.
@@ -22,7 +24,7 @@ yaml_version: 4
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation: 
-  author:       "Jan Kral, Ondrej Kolar"               # Your name
+  author:       "Jan Kral <\href{mailto:jan.kral@vut.cz}{jan.kral@vut.cz}>, Ondrej Kolar <\href{mailto:ondrej.kolar@vut.cz}{ondrej.kolar@vut.cz}>"               # Your name
   title:        "FM Transmitter"                       # Project title
   language:     "Verilog"                              # other examples include Verilog, Amaranth, VHDL, etc
   description:  "FM transmitter with USB or I2S input" # Short description of what your project does
@@ -37,39 +39,39 @@ documentation:
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
-    - I2S SCK
-    - I2S Din
-    - I2S WS
-    - I2S Format select
-    - Audio channel select
-    - Audio source select
-    - none
+    - i2s_clk
+    - i2s_din
+    - i2s_ws
+    - i2s_ws_align_pin
+    - audio_chan_sel_pin
+    - usb_i2sn_pin
+    - dith_disable_pin
     - none
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
-    - DAC[4] (MSB)
-    - DAC[3]
-    - DAC[2]
-    - DAC[1]
-    - DAC[0] (LSB)
+    - dac[0] (LSB)
+    - dac[1]
+    - dac[2]
+    - dac[3] (MSB)
     - none
     - none
-    - USB Active
+    - none
+    - usb_connected
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
-    - USB DP (inout)
-    - USB DN (inout)
-    - USB DP pullup (out)
-    - SPI SCLK (in)
-    - SPI MOSI (in)
-    - SPI MISO (out)
-    - SPI CS (in)
+    - usb_dp (inout)
+    - usb_dn (inout)
+    - usb_dp_pull (out)
     - none
+    - spi_clk (in)
+    - spi_csn (in)
+    - spi_mosi (in)
+    - spi_miso (inout)
 
 # The following fields are optional
-  tag:          "fm, modulator, audio, music, usb, i2s"      # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
-  external_hw:  "5-bit R-2R DAC, USB breakout PCB or I2S source"      # Describe any external hardware needed
-  discord:      "xkolar74_10263"      # Your discord handle, used for communication and automatically assigning tapeout role after a submission
+  tag:          "fm, modulator, audio, music, usb, i2s"           # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
+  external_hw:  "4-bit R-2R DAC, I2S source or USB connection, SPI (optional)"    # Describe any external hardware needed
+  discord:      "xkolar74_10263" # Your discord handle, used for communication and automatically assigning tapeout role after a submission
   doc_link:     "https://github.com/jankralx/tt04-fm-transmitter/blob/main/README.md"      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     60000000       # Clock frequency in Hz (if required)
+  clock_hz:     60000000               # Clock frequency in Hz (if required)
   picture:      "doc/diagram.pdf"      # relative path to a picture in your repository (must be 512kb or less)
