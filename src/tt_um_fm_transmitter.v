@@ -32,6 +32,16 @@ module tt_um_fm_transmitter #(
     wire audio_chan_sel;
     wire i2s_ws_align;          // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
 
+    wire usb_dp_pull;
+    wire usb_connected = 1'b0;
+
+    wire usb_dp_in;     // USB D+ input
+    wire usb_dp_out;    // USB D+ output
+    wire usb_dp_oe;     // USB D+ output enable - active high: 0 input, 1 output
+    wire usb_dn_in;     // USB D- input
+    wire usb_dn_out;    // USB D- output
+    wire usb_dn_oe;     // USB D- output enable - active high: 0 input, 1 output
+
     // inputs
     wire i2s_clk = ui_in[0];
     wire i2s_din = ui_in[1];
@@ -46,23 +56,25 @@ module tt_um_fm_transmitter #(
     wire [D-1:0] dac;
     assign uo_out[3:0] = dac;
     assign uo_out[6:4] = 3'b000;       // TODO uo_out[7:4] is free
-    assign uo_out[7] = 1'b0;           // TODO connect usb_connected signal
+    assign uo_out[7] = usb_connected;
 
     // inouts
+    assign usb_dp_in = uio_in[0];
+    assign usb_dn_in = uio_in[1];
     wire spi_clk = uio_in[4];
     wire spi_csn = uio_in[5];
     wire spi_mosi = uio_in[6];
 
-    assign uio_out[0] = 1'b0;          // TODO - USB DP
-    assign uio_out[1] = 1'b0;          // TODO - USB DN
+    assign uio_out[0] = usb_dp_out;          // TODO - USB DP
+    assign uio_out[1] = usb_dn_out;          // TODO - USB DN
     assign uio_out[2] = 1'b0;          // TODO - USB DP
     assign uio_out[3] = 1'b0;          // TODO - this is free
     assign uio_out[6:4] = 3'b000;      // SPI input pins (CLK, CSn, MOSI)
     assign uio_out[7] = spi_miso;
     
     // inouts direction
-    assign uio_oe[0] = 1'b0;         // TODO - USB DP
-    assign uio_oe[1] = 1'b0;         // TODO - USB DN
+    assign uio_oe[0] = usb_dp_oe;    // TODO - USB DP
+    assign uio_oe[1] = usb_dn_oe;    // TODO - USB DN
     assign uio_oe[2] = 1'b1;         // USB DP
     assign uio_oe[3] = 1'b0;         // TODO - this is free
     assign uio_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
@@ -161,6 +173,41 @@ module tt_um_fm_transmitter #(
         .usb_i2sn(usb_i2sn),
         .audio_chan_sel(audio_chan_sel),
         .i2s_ws_align(i2s_ws_align)                 // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)    
+    );
+
+    ///////////////////////////////////////////////////////////////////////////
+    // USB audio device
+    ///////////////////////////////////////////////////////////////////////////
+    wire [15:0] audio_l, audio_r;
+
+    usb_audio_top #(
+        .DEBUG           ( "FALSE"             )    // If you want to see the debug info of USB device core, set this parameter to "TRUE"
+    ) u_usb_audio (
+        .rstn            ( 1'b1 ),   // we need synchronous release of reset for this - TODO !
+        .clk             ( clk            ),   // clk for USB needs to be 60MHz!
+        // USB signals
+        .usb_dp_pull     ( usb_dp_pull         ),
+
+        .usb_dp_pull     ( usb_dp_pull      ),
+        .usb_dp_in       ( usb_dp_in        ),
+        .usb_dp_out      ( usb_dp_out       ),
+        .usb_dp_oe       ( usb_dp_oe        ),
+        .usb_dn_in       ( usb_dn_in        ),
+        .usb_dn_out      ( usb_dn_out       ),
+        .usb_dn_oe       ( usb_dn_oe        ),
+
+        // USB reset output
+        .usb_rstn        ( usb_connected       ),   // 1: connected , 0: disconnected (when USB cable unplug, or when system reset (rstn=0))
+        // user data : audio output (host-to-device, such as a speaker), and audio input (device-to-host, such as a microphone).
+        .audio_en        (                     ),
+        .audio_lo        ( audio_l             ),   // left-channel output : 16-bit signed integer, which will be valid when audio_en=1
+        .audio_ro        ( audio_r             ),   // right-channel output: 16-bit signed integer, which will be valid when audio_en=1
+        .audio_li        ( audio_l             ),   // left-channel input  : 16-bit signed integer, which will be sampled when audio_en=1
+        .audio_ri        ( audio_r             ),   // right-channel input : 16-bit signed integer, which will be sampled when audio_en=1
+        // debug output info, only for USB developers, can be ignored for normally use
+        .debug_en        (                     ),
+        .debug_data      (                     ),
+        .debug_uart_tx   (                     )
     );
 
 endmodule
