@@ -35,7 +35,7 @@ module spi_config #(
     output wire audio_chan_sel,
     output wire i2s_ws_align                // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)   
 );
-/*
+
     ///////////////////////////////////////////////////////////////////////////
     // default values
     ///////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ module spi_config #(
             shift_reg <= {shift_reg[DW-2:0], spi_mosi};
         end
     end
-
+/*
     // originally there was a latch register activated with CSn,
     // but it complicated the reset, so we stay for now without any
     // protection during config
@@ -177,8 +177,8 @@ module spi_config #(
         dith_fact <= 0;
     end
 
-    assign usb_i2sn = 0;
-    assign audio_chan_sel = 0;
+    assign usb_i2sn = shift_reg[0];
+    assign audio_chan_sel = shift_reg[DW-1];
     assign i2s_ws_align = 0;
 
 endmodule
