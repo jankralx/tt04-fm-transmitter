@@ -121,15 +121,19 @@ module spi_config #(
 
     wire [DW-1:0] latch_reg = shift_reg;
 
+    // TODO: fix comments
     ///////////////////////////////////////////////////////////////////////////
     // MISO signal needs to be registered with negative clock edge
     ///////////////////////////////////////////////////////////////////////////
     // negative edge senstive flip-flop with asynchronous reset
     wire spi_clk_n = ~spi_clk;
-    always @(posedge spi_clk_n or posedge spi_csn) begin
+    always @(posedge spi_clk or posedge spi_csn) begin
         // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
         // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
-        spi_miso <= shift_reg[DW-1];
+        if (spi_csn)
+            spi_miso <= shift_reg[DW-1];
+        else
+            spi_miso <= shift_reg[DW-1];
     end
 
     ///////////////////////////////////////////////////////////////////////////
@@ -146,7 +150,7 @@ module spi_config #(
     // ** dith_fact **
     // disable dithering when disable pin is high and SPI override is not set
     // otherwise value from latch register (default if not set by SPI)
-    always @(dith_disable_pin or latch_reg or spi_override) begin
+    always @* begin
         if (spi_override == 1'b0 && dith_disable_pin == 1'b1) begin
             dith_fact <= 3'b0;
         end else begin
