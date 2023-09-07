@@ -56,16 +56,16 @@ module tt_um_fm_transmitter #(
     assign uio_out[1] = 1'b0;          // TODO - USB DN
     assign uio_out[2] = 1'b0;          // TODO - USB DP
     assign uio_out[3] = 1'b0;          // TODO - this is free
-    assign uio_out[6:4] = 3'b000;   // SPI input pins (CLK, CSn, MOSI)
+    assign uio_out[6:4] = 3'b000;      // SPI input pins (CLK, CSn, MOSI)
     assign uio_out[7] = spi_miso;
     
     // inouts direction
-    assign ui_oe[0] = 1'b0;         // TODO - USB DP
-    assign ui_oe[1] = 1'b0;         // TODO - USB DN
-    assign ui_oe[2] = 1'b1;         // USB DP
-    assign ui_oe[3] = 1'b0;         // TODO - this is free
-    assign ui_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
-    assign uio_oe[7] = ~spi_csn;    // MISO is driven only when spi_csn == 0, otherwise as input (Hi-Z)
+    assign uio_oe[0] = 1'b0;         // TODO - USB DP
+    assign uio_oe[1] = 1'b0;         // TODO - USB DN
+    assign uio_oe[2] = 1'b1;         // USB DP
+    assign uio_oe[3] = 1'b0;         // TODO - this is free
+    assign uio_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
+    assign uio_oe[7] = ~spi_csn;     // MISO is driven only when spi_csn == 0, otherwise as input (Hi-Z)
 
     // unused outputs
     assign uio_oe = 0;
