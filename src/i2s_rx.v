@@ -1,12 +1,14 @@
+`default_nettype none
+
 module i2s_rx
 #(
     parameter DW = 16
 )(
-    input i2s_clk,
-    input i2s_din,
-    input i2s_ws,
-    input chan_sel,
-    input ws_align,             // 0: typical I2S with one bit, 1: left-justified (WS is aligned with data)
+    input wire i2s_clk,
+    input wire i2s_din,
+    input wire i2s_ws,
+    input wire chan_sel,
+    input wire ws_align,             // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
     output reg [DW-1:0] dout,
     output reg dvalid
 );
@@ -24,9 +26,9 @@ module i2s_rx
 
         // dvalid goes active for one cycle after the whole word is received
         if (i2s_ws_del == chan_sel && i2s_ws != chan_sel) begin
-            dvalid <= 1;
+            dvalid <= 1'b1;
         end else begin
-            dvalid <= 0;
+            dvalid <= 1'b0;
         end
 
         // delay i2s_ws by one clock cycle

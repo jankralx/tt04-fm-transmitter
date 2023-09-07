@@ -1,47 +1,34 @@
+`default_nettype none
+
 module fm_modulator
-(
-    input clk,
-    input signed [A-1:0] audio,  // audio signal in 2's complement
-    output [D-1:0] rf
+#(
+    parameter A   = 8,         // number of bits in audio signal
+    parameter L   = 12,        // number of bits of frequency deviation increment
+    parameter N   = 18,        // number of bits in phase accumulator
+    parameter M   = 14,        // number of bits going to sine generator
+    parameter D   = 5,         // number of bits in FM modulator and DAC
+    parameter F_S = 50000000,  // sampling frequency
+    parameter F_C = 10000000,  // carrier frequency
+    parameter DF  = 75000      // frequency deviation
+
+)(
+    input wire clk,
+    input wire signed [A-1:0] audio,  // audio signal in 2's complement
+    input wire [N-1:0] acc_inc,
+    input wire [L-1:0] df_inc,
+    output wire [D-1:0] rf
 );
 
-    parameter A = 8;    // number of bits in audio signal
-    parameter N = 18;   // number of bits in phase accumulator
-    parameter M = 14;   // number of bits in sine generator
-    parameter D = 5;    // number of bits in FM modulator and DAC
-
-    parameter F_S = 50000000;  // sampling frequency
-    parameter F_C = 10000000;  // carrier frequency
-    parameter DF =     75000;  // frequency deviation
-
-    // constants
     localparam R = M-2; // number of bits of phase divided by 4
-    localparam ACC_INC = 2**N / (F_S / F_C);      // phase accumulator increment
-    localparam DF_INC = 2**N / (F_S / DF);        // frequency deviation increment
-
-    
-    // debug print of constants and actual frequencies
-    // real F_C_ACTUAL = F_S * ACC_INC / 2**N;
-    // real DF_ACTUAL = F_S * DF_INC / 2**N;
-    initial begin
-        $display("Current parameters:");
-        $display("F_S = %d", F_S);
-        $display("F_C = %d", F_C);
-        $display("DF = %d", DF);
-        $display("ACC_INC = %d", ACC_INC);
-        $display("DF_INC = %d", DF_INC);
-        //$display("F_C_ACTUAL = %f", F_C_ACTUAL);
-        //$display("DF_ACTUAL = %f", DF_ACTUAL);
-    end
 
     reg [N-1:0] phase_acc = 0;
-    wire [N-1:0] mod_inc = audio * DF_INC / 2**(A-1);
+    wire [N-1:0] mod_inc = audio * df_inc / 2**(A-1);
 
     ///////////////////////////////////////////////////////////////////////////
     // audio signal to FM modulated phase
     ///////////////////////////////////////////////////////////////////////////
     always @(posedge clk) begin
-        phase_acc <= phase_acc + ACC_INC + mod_inc;
+        phase_acc <= phase_acc + acc_inc + mod_inc;
     end
 
     ///////////////////////////////////////////////////////////////////////////
@@ -72,7 +59,7 @@ module fm_modulator
     initial begin
         // check for R and D - they should be same for maximum efficiency
         if (D != R+1) begin
-            $display("WARNING: R=%d and D=%d should comply D=R+1 for maximum efficiency", R, D);
+            $display("WARNING: R=%d, D=%d, M=%d should comply D=R+1=M-1 for maximum efficiency", R, D, M);
         end
     end
 

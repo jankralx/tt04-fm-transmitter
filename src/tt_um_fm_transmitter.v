@@ -12,46 +12,86 @@ module tt_um_fm_transmitter #(
     input  wire       rst_n     // reset_n - low to reset
 );
 
+    localparam A   = 8;         // number of bits in audio signal
+    localparam L   = 12;        // number of bits of frequency deviation increment
+    localparam N   = 18;        // number of bits in phase accumulator
+    localparam M   = 5;         // number of bits in going to sine generator
+    localparam D   = 4;         // number of bits in FM modulator and DAC
+    localparam F_S = 50000000;  // default clock frequency
+    localparam F_C = 10000000;  // default carrier frequency
+    localparam DF  = 75000;     // default frequency deviation
+
+    // interconnect signals
+    wire spi_miso;
+
+    wire [N-1:0] acc_inc;
+    wire [L-1:0] df_inc;
+    wire [D-1:0] dac_ena;
+    wire [2:0] dith_fact;       // TODO connect to destination
+    wire usb_i2sn;              // TODO connect to destination
+    wire audio_chan_sel;
+    wire i2s_ws_align;          // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
+
     // inputs
     wire i2s_clk = ui_in[0];
     wire i2s_din = ui_in[1];
     wire i2s_ws  = ui_in[2];
-    wire chan_sel = ui_in[3];
+    wire i2s_ws_align_pin = ui_in[3];       // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
+    wire audio_chan_sel_pin = ui_in[4];
+    wire usb_i2sn_pin = ui_in[5];
+    wire dith_disable_pin = ui_in[6];
+    // TODO ui_in[7] is free
     
-    // for tests only - dac_bits enable
-    wire [7:0] dac_bits = uio_in;
-
     // outputs
-    wire [7:0] dac;
-    assign uo_out = dac;
+    wire [D-1:0] dac;
+    assign uo_out[3:0] = dac;
+    // TODO uo_out[7:4] is free
+
+    // inouts
+    wire spi_clk = uio_in[4];
+    wire spi_csn = uio_in[5];
+    wire spi_mosi = uio_in[6];
+
+    assign uio_out[0] = 1'b0;          // TODO - USB DP
+    assign uio_out[1] = 1'b0;          // TODO - USB DN
+    assign uio_out[2] = 1'b0;          // TODO - USB DP
+    assign uio_out[3] = 1'b0;          // TODO - this is free
+    assign uio_out[6:4] = 3'b000;   // SPI input pins (CLK, CSn, MOSI)
+    assign uio_out[7] = spi_miso;
+    
+    // inouts direction
+    assign ui_oe[0] = 1'b0;         // TODO - USB DP
+    assign ui_oe[1] = 1'b0;         // TODO - USB DN
+    assign ui_oe[2] = 1'b1;         // USB DP
+    assign ui_oe[3] = 1'b0;         // TODO - this is free
+    assign ui_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
+    assign uio_oe[7] = ~spi_csn;    // MISO is driven only when spi_csn == 0, otherwise as input (Hi-Z)
 
     // unused outputs
     assign uio_oe = 0;
     assign uio_out = 0;
 
     ///////////////////////////////////////////////////////////////////////////
+    // Invertor for reset
+    ///////////////////////////////////////////////////////////////////////////
+    wire rst = ~rst_n;
+        
+    ///////////////////////////////////////////////////////////////////////////
     // I2S receiver
     ///////////////////////////////////////////////////////////////////////////
-    localparam A = 8;   // audio signal width
     localparam DW = 16;
     wire [A-1:0] audio_src;
     wire [DW-1:0] i2s_audio;
     wire i2s_dvalid;
 
-    // connect I2S signals to output for debugging
-    //assign i2s_clk_o = i2s_clk;
-    //assign i2s_din_o = i2s_din;
-    //assign i2s_ws_o = i2s_ws;
-
-    
     i2s_rx #(
         .DW(DW)
     ) i2s_rx_inst (
         .i2s_clk(i2s_clk),
         .i2s_din(i2s_din),
         .i2s_ws(i2s_ws),
-        .chan_sel(chan_sel),
-        .ws_align(1'b0),
+        .chan_sel(audio_chan_sel),
+        .ws_align(i2s_ws_align),
         .dout(i2s_audio),
         .dvalid(i2s_dvalid)
     );
@@ -59,20 +99,24 @@ module tt_um_fm_transmitter #(
     assign audio_src = i2s_audio[DW-1:DW-A];        // select highest bits from received audio signal for FM modulator
 
     ///////////////////////////////////////////////////////////////////////////
-    // Synchronize into clk_50 domain - TODO
+    // Synchronize into clk_50 domain
     ///////////////////////////////////////////////////////////////////////////
     
     wire [A-1:0] audio;
 
-
-    // TODO !!!!!!!!!!
-    assign audio = audio_src;
-
+    cdc_slow2fast_bus #(
+        .DW(A)
+    ) dut (
+        .src_clk(i2s_clk),
+        .src_data(audio_src),
+        .src_dv(i2s_dvalid),
+        .dst_clk(clk),
+        .dst_data(audio)
+    );
 
     ///////////////////////////////////////////////////////////////////////////
     // FM modulator
     ///////////////////////////////////////////////////////////////////////////
-    localparam D = 8;
     wire [D-1:0] rf;
 
     fm_modulator #(
@@ -81,9 +125,43 @@ module tt_um_fm_transmitter #(
     ) fm_modulator_inst (
         .clk(clk),
         .audio(audio),
+        .acc_inc(acc_inc),
+        .df_inc(df_inc),
         .rf(rf)
     );
 
-    assign dac = rf & dac_bits;
+    // selected output bits of DAC are enabled only if ena == 1
+    assign dac = rf & dac_ena & {$size(dac){ena}};
+
+    ///////////////////////////////////////////////////////////////////////////
+    // SPI configuration core
+    ///////////////////////////////////////////////////////////////////////////
+    spi_config #(
+        .A(A),      // number of bits in audio signal
+        .L(L),      // number of bits of frequency deviation increment
+        .N(N),      // number of bits in phase accumulator
+        .M(M),      // number of bits in sine generator
+        .D(D),      // number of bits in FM modulator and DAC
+        .F_S(F_S),  // default clock frequency
+        .F_C(F_C),  // default carrier frequency
+        .DF(DF)     // default frequency deviation
+    ) dut(
+        .rst(rst),
+        .spi_clk(spi_clk),
+        .spi_csn(spi_csn),
+        .spi_mosi(spi_mosi),
+        .spi_miso(spi_miso),
+        .usb_i2sn_pin(usb_i2sn_pin),
+        .audio_chan_sel_pin(audio_chan_sel_pin),
+        .i2s_ws_align_pin(i2s_ws_align_pin),            // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
+        .dith_disable_pin(dith_disable_pin),
+        .acc_inc(acc_inc),
+        .df_inc(df_inc),
+        .dac_ena(dac_ena),
+        .dith_fact(dith_fact),
+        .usb_i2sn(usb_i2sn),
+        .audio_chan_sel(audio_chan_sel),
+        .i2s_ws_align(i2s_ws_align)                 // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)    
+    );
 
 endmodule
