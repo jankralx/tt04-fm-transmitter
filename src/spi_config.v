@@ -35,6 +35,7 @@ module spi_config #(
     output wire audio_chan_sel,
     output wire i2s_ws_align                // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)   
 );
+/*
     ///////////////////////////////////////////////////////////////////////////
     // default values
     ///////////////////////////////////////////////////////////////////////////
@@ -163,5 +164,21 @@ module spi_config #(
     assign usb_i2sn = spi_override == 1'b1 ? latch_reg[USB_I2SN_POS] : usb_i2sn_pin;
     assign audio_chan_sel = spi_override == 1'b1 ? latch_reg[AUDIO_CHAN_SEL_POS] : audio_chan_sel_pin;
     assign i2s_ws_align = spi_override == 1'b1 ? latch_reg[I2S_WS_ALIGN] : i2s_ws_align_pin;
+*/
+
+    assign spi_miso = 1'b0;
+
+    // configuration values
+    assign acc_inc = 0;
+    assign df_inc = 0;
+    assign dac_ena = 0;
+
+    always @(posedge spi_clk) begin
+        dith_fact <= 0;
+    end
+
+    assign usb_i2sn = 0;
+    assign audio_chan_sel = 0;
+    assign i2s_ws_align = 0;
 
 endmodule

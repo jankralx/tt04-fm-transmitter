@@ -2,11 +2,8 @@
 
 module cdc_slow2fast_bus
 #(
-    // parameter DEL = 1,         // number of src_clk cycles to delay input src_dv (data valid) signal
-    //                            // it should be 1 (or >= 1) if no external delay is provided
     parameter DW  = 8             // data width
 )(
-    input wire src_clk,
     input wire [DW-1:0] src_data,
     input wire src_dv,
 

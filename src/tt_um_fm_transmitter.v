@@ -45,7 +45,8 @@ module tt_um_fm_transmitter #(
     // outputs
     wire [D-1:0] dac;
     assign uo_out[3:0] = dac;
-    // TODO uo_out[7:4] is free
+    assign uo_out[6:4] = 3'b000;       // TODO uo_out[7:4] is free
+    assign uo_out[7] = 1'b0;           // TODO connect usb_connected signal
 
     // inouts
     wire spi_clk = uio_in[4];
@@ -103,7 +104,6 @@ module tt_um_fm_transmitter #(
     cdc_slow2fast_bus #(
         .DW(A)
     ) cdc_audio_data (
-        .src_clk(i2s_clk),
         .src_data(audio_src),
         .src_dv(i2s_dvalid),
         .dst_clk(clk),
