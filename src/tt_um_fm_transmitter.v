@@ -186,8 +186,6 @@ module tt_um_fm_transmitter #(
         .rstn            ( 1'b1 ),   // we need synchronous release of reset for this - TODO !
         .clk             ( clk            ),   // clk for USB needs to be 60MHz!
         // USB signals
-        .usb_dp_pull     ( usb_dp_pull         ),
-
         .usb_dp_pull     ( usb_dp_pull      ),
         .usb_dp_in       ( usb_dp_in        ),
         .usb_dp_out      ( usb_dp_out       ),
