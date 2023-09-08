@@ -14,10 +14,10 @@ module spi_config #(
 )(
     input wire rst,
 
-    input wire spi_clk,
-    input wire spi_csn,
-    input wire spi_mosi,
-    output reg spi_miso,
+    input  wire spi_clk,
+    input  wire spi_csn,
+    input  wire spi_mosi,
+    output wire spi_miso,
 
     // pin configuration inputs
     input wire multiply_sel_pin,
@@ -92,6 +92,21 @@ module spi_config #(
     // configuration vector width
     localparam DW = SPI_OVERRIDE_POS + 1;
 
+    initial begin
+        // TODO: fix vector map
+        $display("Vector map:");
+        $display("ACC_INC = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("DF_INC_COEF = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("DF_INC_FACT = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("DAC_ENA = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("DITH_FACT = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("MULTIPLY_SEL = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("AUDIO_CHAN_SEL = [%d:%d]", ACC_INC_POS+N-1, ACC_INC_POS);
+        $display("I2S_WS_ALIGN = [%d]", I2S_WS_ALIGN);
+        $display("SPI_OVERRIDE = [%d]", SPI_OVERRIDE_POS);
+        $display("Total vector length = %d bits", DW);
+    end
+
     ///////////////////////////////////////////////////////////////////////////
     // SPI shift register and latch
     ///////////////////////////////////////////////////////////////////////////
@@ -127,23 +142,21 @@ module spi_config #(
 
     wire [DW-1:0] latch_reg = shift_reg;
 
-    // TODO: fix comments
     ///////////////////////////////////////////////////////////////////////////
     // MISO signal needs to be registered with negative clock edge
     ///////////////////////////////////////////////////////////////////////////
-    // negative edge senstive flip-flop with asynchronous reset
-    /*
-    always @(negedge spi_clk or posedge spi_csn) begin
-        // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
-        // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
-        if (spi_csn)
-            spi_miso <= shift_reg[DW-1];
-        else
-            spi_miso <= shift_reg[DW-1];
-    end
-    */
 
-    assign spi_miso = shift_reg[DW-1];
+    reg spi_miso_reg0;
+    always @(posedge spi_clk) begin
+        spi_miso_reg0 <= shift_reg[DW-1];
+    end
+
+    reg spi_miso_reg;
+    always @(negedge spi_clk) begin
+        spi_miso_reg <= spi_miso_reg0;
+    end
+
+    assign spi_miso = spi_miso_reg; // shift_reg[DW-1];
 
     ///////////////////////////////////////////////////////////////////////////
     // output assignments
