@@ -17,7 +17,7 @@ module spi_config #(
     input wire spi_clk,
     input wire spi_csn,
     input wire spi_mosi,
-    output wire spi_miso,
+    output reg spi_miso,
 
     // pin configuration inputs
     input wire usb_i2sn_pin,
@@ -132,16 +132,16 @@ module spi_config #(
     // MISO signal needs to be registered with negative clock edge
     ///////////////////////////////////////////////////////////////////////////
     // negative edge senstive flip-flop with asynchronous reset
-    //wire spi_clk_n = ~spi_clk;
-    // always @(posedge spi_clk or posedge spi_csn) begin
-    //     // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
-    //     // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
-    //     if (spi_csn)
-    //         spi_miso <= shift_reg[DW-1];
-    //     else
-    //         spi_miso <= shift_reg[DW-1];
-    // end
-    assign spi_miso = shift_reg[DW-1];
+    always @(negedge spi_clk or posedge spi_csn) begin
+        // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
+        // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
+        if (spi_csn)
+            spi_miso <= shift_reg[DW-1];
+        else
+            spi_miso <= shift_reg[DW-1];
+    end
+
+//    assign spi_miso = shift_reg[DW-1];
 
     ///////////////////////////////////////////////////////////////////////////
     // output assignments

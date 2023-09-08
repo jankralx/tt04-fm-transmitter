@@ -1,7 +1,9 @@
 `default_nettype none
 
-module tt_um_fm_transmitter #( 
-) (
+module tt_um_fm_transmitter #(
+    parameter FPGA_DEBUG = 0
+)
+(
     input  wire [7:0] ui_in,    // Dedicated inputs - connected to the input switches
     output wire [7:0] uo_out,   // Dedicated outputs - connected to the 7 segment display
     input  wire [7:0] uio_in,   // IOs: Bidirectional Input path
@@ -63,10 +65,10 @@ module tt_um_fm_transmitter #(
     assign uio_out[7] = spi_miso;
     
     // inouts direction
-    assign uio_oe[0] = 1'b0;         // TODO - USB DP
-    assign uio_oe[1] = 1'b0;         // TODO - USB DN
-    assign uio_oe[2] = 1'b1;         // USB DP
-    assign uio_oe[3] = 1'b0;         // TODO - this is free
+    assign uio_oe[0] = 1'b0;         // unused
+    assign uio_oe[1] = 1'b0;         // unused
+    assign uio_oe[2] = 1'b0;         // unused
+    assign uio_oe[3] = 1'b0;         // unused
     assign uio_oe[6:4] = 3'b000;     // SPI input pins (CLK, CSn, MOSI)
     assign uio_oe[7] = ~spi_csn;     // MISO is driven only when spi_csn == 0, otherwise as input (Hi-Z)
 
@@ -97,6 +99,20 @@ module tt_um_fm_transmitter #(
 
     assign audio_src = i2s_audio[DW-1:DW-A];        // select highest bits from received audio signal for FM modulator
 
+
+    // fpga ILA is instantiated only when FPGA_DEBUG
+    generate
+        if (FPGA_DEBUG)
+            ila_0 ila_i2c_src (
+                .clk(i2s_clk), // input wire clk
+                .probe0(i2s_audio), // input wire [15:0]  probe0  
+                .probe1(i2s_dvalid), // input wire [0:0]  probe1 
+                .probe2(audio_chan_sel), // input wire [0:0]  probe2 
+                .probe3(i2s_din), // input wire [0:0]  probe3 
+                .probe4(i2s_ws) // input wire [0:0]  probe4
+            );
+    endgenerate
+
     ///////////////////////////////////////////////////////////////////////////
     // Synchronize into clk_50 domain
     ///////////////////////////////////////////////////////////////////////////
@@ -111,6 +127,20 @@ module tt_um_fm_transmitter #(
         .dst_clk(clk),
         .dst_data(audio)
     );
+
+    generate
+        if (FPGA_DEBUG)
+            ila_1 ila_i2s_clk50 (
+                .clk(clk), // input wire clk
+                .probe0(i2s_audio), // input wire [15:0]  probe0  
+                .probe1(audio), // input wire [15:0]  probe1 
+                .probe2(audio_chan_sel), // input wire [0:0]  probe2 
+                .probe3(i2s_clk), // input wire [0:0]  probe3 
+                .probe4(i2s_dvalid), // input wire [0:0]  probe4 
+                .probe5(i2s_ws), // input wire [0:0]  probe5 
+                .probe6(i2s_din) // input wire [0:0]  probe6
+            );
+    endgenerate
 
     ///////////////////////////////////////////////////////////////////////////
     // FM modulator

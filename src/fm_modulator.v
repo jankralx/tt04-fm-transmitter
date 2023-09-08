@@ -34,8 +34,6 @@ module fm_modulator
             mod_inc = mod_inc_mult;
     end
         
-    // wire [N-1:0] mod_inc = (df_inc_fact == 0) ? mod_inc_mult[N-1:3] : (df_inc_fact == 1) ? mod_inc_mult[N-1:2] : (df_inc_fact == 1) ? mod_inc_mult[N-1:1] : mod_inc_mult[N-1:0];
-
     ///////////////////////////////////////////////////////////////////////////
     // audio signal to FM modulated phase
     ///////////////////////////////////////////////////////////////////////////
