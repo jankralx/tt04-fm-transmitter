@@ -32,7 +32,7 @@ module tt_um_fm_transmitter #(
     wire [L-1:0] df_inc_fact;
     wire [D-1:0] dac_ena;
     wire [2:0] dith_fact;       // TODO connect to destination
-    wire usb_i2sn;              // TODO connect to destination
+    wire multiply_sel;
     wire audio_chan_sel;
     wire i2s_ws_align;          // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
 
@@ -42,7 +42,7 @@ module tt_um_fm_transmitter #(
     wire i2s_ws  = ui_in[2];
     wire i2s_ws_align_pin = ui_in[3];       // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
     wire audio_chan_sel_pin = ui_in[4];
-    wire usb_i2sn_pin = ui_in[5];
+    wire multiply_sel_pin = ui_in[5];
     wire dith_disable_pin = ui_in[6];
     // TODO ui_in[7] is free
     
@@ -159,6 +159,7 @@ module tt_um_fm_transmitter #(
         .acc_inc(acc_inc),
         .df_inc_coef(df_inc_coef),
         .df_inc_fact(df_inc_fact),
+        .multiply_sel(multiply_sel),
         .rf(rf)
     );
 
@@ -184,7 +185,7 @@ module tt_um_fm_transmitter #(
         .spi_csn(spi_csn),
         .spi_mosi(spi_mosi),
         .spi_miso(spi_miso),
-        .usb_i2sn_pin(usb_i2sn_pin),
+        .multiply_sel_pin(multiply_sel_pin),
         .audio_chan_sel_pin(audio_chan_sel_pin),
         .i2s_ws_align_pin(i2s_ws_align_pin),            // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
         .dith_disable_pin(dith_disable_pin),
@@ -193,9 +194,32 @@ module tt_um_fm_transmitter #(
         .df_inc_fact(df_inc_fact),
         .dac_ena(dac_ena),
         .dith_fact(dith_fact),
-        .usb_i2sn(usb_i2sn),
+        .multiply_sel(multiply_sel),
         .audio_chan_sel(audio_chan_sel),
         .i2s_ws_align(i2s_ws_align)                 // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)    
     );
+
+    generate
+        if (FPGA_DEBUG)
+            ila_2 ila_fmmod_inst (
+                .clk(clk), // input wire clk
+                .probe0(dac), // input wire [3:0]  probe0  
+                .probe1(acc_inc), // input wire [17:0]  probe1 
+                .probe2(df_inc_coef), // input wire [3:0]  probe2 
+                .probe3(df_inc_fact), // input wire [1:0]  probe3 
+                .probe4(dac_ena), // input wire [3:0]  probe4 
+                .probe5(dith_fact), // input wire [2:0]  probe5 
+                .probe6(spi_clk), // input wire [0:0]  probe6 
+                .probe7(spi_csn), // input wire [0:0]  probe7 
+                .probe8(spi_mosi), // input wire [0:0]  probe8 
+                .probe9(spi_miso), // input wire [0:0]  probe9 
+                .probe10(audio_chan_sel_pin), // input wire [0:0]  probe10 
+                .probe11(i2s_ws_align_pin), // input wire [0:0]  probe11 
+                .probe12(dith_disable_pin), // input wire [0:0]  probe12 
+                .probe13(audio_chan_sel), // input wire [0:0]  probe13 
+                .probe14(i2s_ws_align), // input wire [0:0]  probe14 
+                .probe15(rst) // input wire [0:0]  probe15
+            );        
+    endgenerate
 
 endmodule

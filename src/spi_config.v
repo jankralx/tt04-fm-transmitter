@@ -7,7 +7,7 @@ module spi_config #(
     parameter N   = 18,        // number of bits in phase accumulator
     parameter M   = 14,        // number of bits in sine generator
     parameter D   = 5,         // number of bits in FM modulator and DAC
-    parameter F_S = 40000000,  // default clock frequency
+    parameter F_S = 50000000,  // default clock frequency
     parameter F_C = 10000000,  // default carrier frequency
     parameter DF  = 75000      // default frequency deviation
 
@@ -20,7 +20,7 @@ module spi_config #(
     output reg spi_miso,
 
     // pin configuration inputs
-    input wire usb_i2sn_pin,
+    input wire multiply_sel_pin,
     input wire audio_chan_sel_pin,
     input wire i2s_ws_align_pin,            // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
     input wire dith_disable_pin,
@@ -33,7 +33,7 @@ module spi_config #(
     output reg [2:0] dith_fact,
 
     // configuration flags
-    output wire usb_i2sn,
+    output wire multiply_sel,
     output wire audio_chan_sel,
     output wire i2s_ws_align                // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)   
 );
@@ -46,8 +46,8 @@ module spi_config #(
     // if different F_S, F_C, and DF are required for real operation one would need to set
     // these parameters by SPI
 
-    localparam ACC_INC_DEF = 65536;        // as calculated in doc/df_inc_calculation.ods for Fc = 10 MHz and Fclk = 40 MHz
-    localparam DF_INC_COEF_DEF = 15;       // as calculated in doc/df_inc_calculation.ods for 4-bit coefficient and Fclk = 40 MHz
+    localparam ACC_INC_DEF = 52429;//65536;        // as calculated in doc/df_inc_calculation.ods for Fc = 10 MHz and Fclk = 40 MHz
+    localparam DF_INC_COEF_DEF = 12; //15;       // as calculated in doc/df_inc_calculation.ods for 4-bit coefficient and Fclk = 40 MHz
     localparam DF_INC_FACT_DEF = 0;        // 0: x32, 1: x64, 2: x128, 3: x256
     
     // debug print of constants and actual frequencies
@@ -167,7 +167,7 @@ module spi_config #(
     end
 
     // if spi_override is not set, pin value is taken
-    assign usb_i2sn = spi_override == 1'b1 ? latch_reg[USB_I2SN_POS] : usb_i2sn_pin;
+    assign multiply_sel = spi_override == 1'b1 ? latch_reg[USB_I2SN_POS] : multiply_sel_pin;
     assign audio_chan_sel = spi_override == 1'b1 ? latch_reg[AUDIO_CHAN_SEL_POS] : audio_chan_sel_pin;
     assign i2s_ws_align = spi_override == 1'b1 ? latch_reg[I2S_WS_ALIGN] : i2s_ws_align_pin;
 

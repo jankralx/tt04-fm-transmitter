@@ -14,25 +14,52 @@ module fm_modulator
     input wire [N-1:0] acc_inc,
     input wire [K-1:0] df_inc_coef,
     input wire [L-1:0] df_inc_fact,
+    input wire multiply_sel,
     output wire [D-1:0] rf
 );
 
     localparam R = M-2; // number of bits of phase divided by 4
 
     reg [N-1:0] phase_acc = 0;
-    wire [N-1:0] mod_inc_mult = audio * df_inc_coef * 256 / 2**(A-1);
-    
-    reg [N-1:0] mod_inc;
+
+    // allocate enough vector width for multiplication, because we are not sure about bit expansion during multiplication
+    wire signed [N-1:0] audio_w = audio;       
+    wire [N-1:0] df_inc_coef_w = df_inc_coef;
+
+    wire signed [N-1:0] mod_inc_mult;
+    assign mod_inc_mult = audio_w * df_inc_coef_w * 2; // before it was = ... * (256 / 2**(A-1));
+
+    /*
+    // this should be more universal but does not work well - not sure why now
+    generate
+        if (256 >= 2**(A-1))
+            assign mod_inc_mult = audio_w * df_inc_coef_w * (256 / 2**(A-1));
+        else
+            assign mod_inc_mult = audio_w * df_inc_coef_w / (2**(A-1) / 256);
+    endgenerate
+    */
+
+//    assign mod_inc_mult = 
+
+    wire signed [N-1:0] mod_inc_safe = audio * 512 / 2**(A-1);
+
+    reg signed [N-1:0] mod_inc;
     always @* begin
-        if (df_inc_fact == 0)           // x 256 / 8
-            mod_inc = mod_inc_mult[N-1:3];
-        else if (df_inc_fact == 1)      // x 256 / 4
-            mod_inc = {2'b00, mod_inc_mult[N-1:2]};
-        else if (df_inc_fact == 2)      // x 256 / 2
-            mod_inc = {1'b0, mod_inc_mult[N-1:1]};
-        else                            // x 256
-            mod_inc = mod_inc_mult;
+        if (multiply_sel) begin
+            mod_inc = mod_inc_safe;
+        end else begin
+            if (df_inc_fact == 0)           // x 256 / 8
+                mod_inc = mod_inc_mult / 8;
+            else if (df_inc_fact == 1)      // x 256 / 4
+                mod_inc = mod_inc_mult / 4;
+            else if (df_inc_fact == 2)      // x 256 / 2
+                mod_inc = mod_inc_mult / 2;
+            else                            // x 256
+                mod_inc = mod_inc_mult;
+        end
     end
+
+    //wire [N-1:0] mod_inc = audio * 384 / 2**(A-1);
         
     ///////////////////////////////////////////////////////////////////////////
     // audio signal to FM modulated phase

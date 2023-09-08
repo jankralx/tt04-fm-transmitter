@@ -44,7 +44,7 @@ documentation:
     - i2s_ws
     - i2s_ws_align_pin
     - audio_chan_sel_pin
-    - usb_i2sn_pin
+    - multiply_sel_pin
     - dith_disable_pin
     - none
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
