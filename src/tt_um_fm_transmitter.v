@@ -33,7 +33,7 @@ module tt_um_fm_transmitter #(
     wire i2s_ws_align;          // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
 
     wire usb_dp_pull;
-    wire usb_connected = 1'b0;
+    wire usb_connected;
 
     wire usb_dp_in;     // USB D+ input
     wire usb_dp_out;    // USB D+ output
