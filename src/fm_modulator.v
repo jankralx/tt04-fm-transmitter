@@ -3,7 +3,8 @@
 module fm_modulator
 #(
     parameter A   = 8,         // number of bits in audio signal
-    parameter L   = 12,        // number of bits of frequency deviation increment
+    parameter K   = 4,         // number of bits of frequency deviation increment coefficient
+    parameter L   = 2,         // number of bits of frequency deviation increment factor
     parameter N   = 18,        // number of bits in phase accumulator
     parameter M   = 14,        // number of bits going to sine generator
     parameter D   = 5          // number of bits in FM modulator and DAC
@@ -11,14 +12,26 @@ module fm_modulator
     input wire clk,
     input wire signed [A-1:0] audio,  // audio signal in 2's complement
     input wire [N-1:0] acc_inc,
-    input wire [L-1:0] df_inc,
+    input wire [L-1:0] df_inc_coef,
+    input wire [K-1:0] df_inc_fact,
     output wire [D-1:0] rf
 );
 
     localparam R = M-2; // number of bits of phase divided by 4
 
     reg [N-1:0] phase_acc = 0;
-    wire [N-1:0] mod_inc = audio * df_inc / 2**(A-1);
+    wire [N-1:0] mod_inc_mult = audio * df_inc_coef * 256 / 2**(A-1);
+    reg [N-1:0] mod_inc;
+    always @* begin
+        if (df_inc_fact == 0)           // x 256 / 8
+            mod_inc = {3'b000, mod_inc_mult[N-1:3]};
+        else if (df_inc_fact == 1)      // x 256 / 4
+            mod_inc = {2'b00, mod_inc_mult[N-1:2]};
+        else if (df_inc_fact == 1)      // x 256 / 2
+            mod_inc = {1'b0, mod_inc_mult[N-1:1]};
+        else                            // x 256
+            mod_inc = mod_inc_mult;
+    end
 
     ///////////////////////////////////////////////////////////////////////////
     // audio signal to FM modulated phase

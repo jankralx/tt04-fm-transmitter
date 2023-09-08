@@ -27,7 +27,7 @@ documentation:
   author:       "Jan Kral (<jan.kral@vut.cz>), Ondrej Kolar (<ondrej.kolar@vut.cz>)"               # Your name
   title:        "FM Transmitter"                       # Project title
   language:     "Verilog"                              # other examples include Verilog, Amaranth, VHDL, etc
-  description:  "FM transmitter with USB or I2S input" # Short description of what your project does
+  description:  "FM transmitter with I2S input"        # Short description of what your project does
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
@@ -56,12 +56,12 @@ documentation:
     - none
     - none
     - none
-    - usb_connected
+    - none
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
-    - usb_dp (inout)
-    - usb_dn (inout)
-    - usb_dp_pull (out)
+    - none
+    - none
+    - none
     - none
     - spi_clk (in)
     - spi_csn (in)
@@ -69,9 +69,9 @@ documentation:
     - spi_miso (inout)
 
 # The following fields are optional
-  tag:          "fm, modulator, audio, music, usb, i2s"           # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
-  external_hw:  "4-bit R-2R DAC, I2S source or USB connection, SPI (optional)"    # Describe any external hardware needed
-  discord:      "xkolar74_10263" # Your discord handle, used for communication and automatically assigning tapeout role after a submission
+  tag:          "fm, modulator, audio, music, i2s"              # comma separated list of tags: test, encryption, experiment, clock, animation, utility, industrial, pwm, fpga, alu, microprocessor, risc, riscv, sensor, signal generator, fft, filter, music, bcd, sound, serial, timer, random number generator, calculator, decoder, counter, puzzle, multiplier, game, oscillator,
+  external_hw:  "4-bit R-2R DAC, I2S source, SPI (optional)"    # Describe any external hardware needed
+  discord:      "xkolar74_10263"       # Your discord handle, used for communication and automatically assigning tapeout role after a submission
   doc_link:     "https://github.com/jankralx/tt04-fm-transmitter/blob/main/README.md"      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     60000000               # Clock frequency in Hz (if required)
+  clock_hz:     50000000               # Clock frequency in Hz (if required)
   picture:      "doc/diagram.pdf"      # relative path to a picture in your repository (must be 512kb or less)

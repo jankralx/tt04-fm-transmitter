@@ -13,7 +13,8 @@ module tt_um_fm_transmitter #(
 );
 
     localparam A   = 8;         // number of bits in audio signal
-    localparam L   = 12;        // number of bits of frequency deviation increment
+    localparam K   = 4;         // number of bits of frequency deviation increment coefficient
+    localparam L   = 2;         // number of bits of frequency deviation increment factor
     localparam N   = 18;        // number of bits in phase accumulator
     localparam M   = 5;         // number of bits in going to sine generator
     localparam D   = 4;         // number of bits in FM modulator and DAC
@@ -25,7 +26,8 @@ module tt_um_fm_transmitter #(
     wire spi_miso;
 
     wire [N-1:0] acc_inc;
-    wire [L-1:0] df_inc;
+    wire [K-1:0] df_inc_coef;
+    wire [L-1:0] df_inc_fact;
     wire [D-1:0] dac_ena;
     wire [2:0] dith_fact;       // TODO connect to destination
     wire usb_i2sn;              // TODO connect to destination
@@ -125,7 +127,8 @@ module tt_um_fm_transmitter #(
         .clk(clk),
         .audio(audio),
         .acc_inc(acc_inc),
-        .df_inc(df_inc),
+        .df_inc_coef(df_inc_coef),
+        .df_inc_fact(df_inc_fact),
         .rf(rf)
     );
 
@@ -137,7 +140,8 @@ module tt_um_fm_transmitter #(
     ///////////////////////////////////////////////////////////////////////////
     spi_config #(
         .A(A),      // number of bits in audio signal
-        .L(L),      // number of bits of frequency deviation increment
+        .K(K),      // number of bits of frequency deviation increment coefficient
+        .L(L),      // number of bits of frequency deviation increment factor
         .N(N),      // number of bits in phase accumulator
         .M(M),      // number of bits in sine generator
         .D(D),      // number of bits in FM modulator and DAC
@@ -155,7 +159,8 @@ module tt_um_fm_transmitter #(
         .i2s_ws_align_pin(i2s_ws_align_pin),            // 0: typical I2S with one bit delay, 1: left-justified (WS is aligned with data)
         .dith_disable_pin(dith_disable_pin),
         .acc_inc(acc_inc),
-        .df_inc(df_inc),
+        .df_inc_coef(df_inc_coef),
+        .df_inc_fact(df_inc_fact),
         .dac_ena(dac_ena),
         .dith_fact(dith_fact),
         .usb_i2sn(usb_i2sn),

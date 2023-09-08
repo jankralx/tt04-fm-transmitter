@@ -2,11 +2,12 @@
 
 module spi_config #(
     parameter A   = 8,         // number of bits in audio signal
-    parameter L   = 12,        // number of bits of frequency deviation increment
+    parameter K   = 4,         // number of bits of frequency deviation increment coefficient
+    parameter L   = 2,         // number of bits of frequency deviation increment factor
     parameter N   = 18,        // number of bits in phase accumulator
     parameter M   = 14,        // number of bits in sine generator
     parameter D   = 5,         // number of bits in FM modulator and DAC
-    parameter F_S = 50000000,  // default clock frequency
+    parameter F_S = 40000000,  // default clock frequency
     parameter F_C = 10000000,  // default carrier frequency
     parameter DF  = 75000      // default frequency deviation
 
@@ -26,7 +27,8 @@ module spi_config #(
 
     // configuration values
     output wire [N-1:0] acc_inc,
-    output wire [L-1:0] df_inc,
+    output wire [L-1:0] df_inc_coef,
+    output wire [K-1:0] df_inc_fact,
     output wire [D-1:0] dac_ena,
     output reg [2:0] dith_fact,
 
@@ -44,19 +46,21 @@ module spi_config #(
     // if different F_S, F_C, and DF are required for real operation one would need to set
     // these parameters by SPI
 
-    localparam ACC_INC_DEF = 2**N / (F_S / F_C);      // phase accumulator increment
-    localparam DF_INC_DEF = 2**N / (F_S / DF);        // frequency deviation increment
+    localparam ACC_INC_DEF = 65536;        // as calculated in doc/df_inc_calculation.ods for Fc = 10 MHz and Fclk = 40 MHz
+    localparam DF_INC_COEF_DEF = 15;       // as calculated in doc/df_inc_calculation.ods for 4-bit coefficient and Fclk = 40 MHz
+    localparam DF_INC_FACT_DEF = 0;        // 0: x32, 1: x64, 2: x128, 3: x256
     
     // debug print of constants and actual frequencies
     // real F_C_ACTUAL = F_S * ACC_INC / 2**N;
     // real DF_ACTUAL = F_S * DF_INC / 2**N;
     initial begin
-        $display("Current parameters:");
+        $display("Default parameters:");
         $display("F_S = %d", F_S);
         $display("F_C = %d", F_C);
         $display("DF = %d", DF);
         $display("ACC_INC = %d", ACC_INC_DEF);
-        $display("DF_INC = %d", DF_INC_DEF);
+        $display("DF_INC_COEF = %d", DF_INC_COEF_DEF);
+        $display("DF_INC_FACT = %d", DF_INC_FACT_DEF);
         //$display("F_C_ACTUAL = %f", F_C_ACTUAL);
         //$display("DF_ACTUAL = %f", DF_ACTUAL);
     end
@@ -72,8 +76,9 @@ module spi_config #(
 
     // configuration vector space
     localparam ACC_INC_POS = 0;
-    localparam DF_INC_POS = ACC_INC_POS + N;
-    localparam DAC_ENA_POS = DF_INC_POS + L;
+    localparam DF_INC_COEF_POS = ACC_INC_POS + N;
+    localparam DF_INC_FACT_POS = DF_INC_COEF_POS + K;
+    localparam DAC_ENA_POS = DF_INC_FACT_POS + L;
     localparam DITH_FACT_POS = DAC_ENA_POS + D;
     
     // single bit flags
@@ -97,11 +102,11 @@ module spi_config #(
     always @(posedge spi_clk or posedge rst) begin
         if (rst) begin
             shift_reg <= {DW{1'b0}};
-            shift_reg[N-1+ACC_INC_POS:ACC_INC_POS]   <= ACC_INC_DEF;
-            shift_reg[L-1+DF_INC_POS:DF_INC_POS]     <= DF_INC_DEF;
-            shift_reg[D-1+DAC_ENA_POS:DAC_ENA_POS]   <= DAC_ENA_DEF;
-            shift_reg[2+DITH_FACT_POS:DITH_FACT_POS] <= DITH_FACT_DEF;
-
+            shift_reg[N-1+ACC_INC_POS:ACC_INC_POS]          <= ACC_INC_DEF;
+            shift_reg[K-1+DF_INC_COEF_POS:DF_INC_COEF_POS]  <= DF_INC_COEF_DEF;
+            shift_reg[L-1+DF_INC_FACT_POS:DF_INC_FACT_POS]  <= DF_INC_FACT_DEF;
+            shift_reg[D-1+DAC_ENA_POS:DAC_ENA_POS]          <= DAC_ENA_DEF;
+            shift_reg[2+DITH_FACT_POS:DITH_FACT_POS]        <= DITH_FACT_DEF;
         end else if (~spi_csn) begin
             shift_reg <= {shift_reg[DW-2:0], spi_mosi};
         end
@@ -146,7 +151,8 @@ module spi_config #(
     wire spi_override = latch_reg[SPI_OVERRIDE_POS];
 
     assign acc_inc = latch_reg[N-1+ACC_INC_POS:ACC_INC_POS];
-    assign df_inc = latch_reg[L-1+DF_INC_POS:DF_INC_POS];
+    assign df_inc_coef = latch_reg[K-1+DF_INC_COEF_POS:DF_INC_COEF_POS];
+    assign df_inc_fact = latch_reg[L-1+DF_INC_FACT_POS:DF_INC_FACT_POS];
     assign dac_ena = latch_reg[D-1+DAC_ENA_POS:DAC_ENA_POS];
 
     // ** dith_fact **
