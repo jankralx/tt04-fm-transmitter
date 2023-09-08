@@ -1,4 +1,0 @@
-[submodule "FPGA-USB-Device"]
-	path = FPGA-USB-Device
-	url = git@github.com:jankralx/FPGA-USB-Device.git
-	branch = main
