@@ -132,6 +132,7 @@ module spi_config #(
     // MISO signal needs to be registered with negative clock edge
     ///////////////////////////////////////////////////////////////////////////
     // negative edge senstive flip-flop with asynchronous reset
+    /*
     always @(negedge spi_clk or posedge spi_csn) begin
         // CSn works as asynchronous reset, when not selected, MOSI is assigned the highest bit
         // also with any negative edge of clock, MOSI is assigned highest bit (which is shifted during rising edges)
@@ -140,8 +141,9 @@ module spi_config #(
         else
             spi_miso <= shift_reg[DW-1];
     end
+    */
 
-//    assign spi_miso = shift_reg[DW-1];
+    assign spi_miso = shift_reg[DW-1];
 
     ///////////////////////////////////////////////////////////////////////////
     // output assignments
