@@ -12,8 +12,8 @@ module fm_modulator
     input wire clk,
     input wire signed [A-1:0] audio,  // audio signal in 2's complement
     input wire [N-1:0] acc_inc,
-    input wire [L-1:0] df_inc_coef,
-    input wire [K-1:0] df_inc_fact,
+    input wire [K-1:0] df_inc_coef,
+    input wire [L-1:0] df_inc_fact,
     output wire [D-1:0] rf
 );
 
@@ -22,7 +22,6 @@ module fm_modulator
     reg [N-1:0] phase_acc = 0;
     wire [N-1:0] mod_inc_mult = audio * df_inc_coef * 256 / 2**(A-1);
     
-    /*
     reg [N-1:0] mod_inc;
     always @* begin
         if (df_inc_fact == 0)           // x 256 / 8
@@ -34,9 +33,8 @@ module fm_modulator
         else                            // x 256
             mod_inc = mod_inc_mult;
     end
-    */
-    
-    wire [N-1:0] mod_inc = (df_inc_fact == 0) ? mod_inc_mult[N-1:3] : (df_inc_fact == 1) ? mod_inc_mult[N-1:2] : (df_inc_fact == 1) ? mod_inc_mult[N-1:1] : mod_inc_mult[N-1:0];
+        
+    // wire [N-1:0] mod_inc = (df_inc_fact == 0) ? mod_inc_mult[N-1:3] : (df_inc_fact == 1) ? mod_inc_mult[N-1:2] : (df_inc_fact == 1) ? mod_inc_mult[N-1:1] : mod_inc_mult[N-1:0];
 
     ///////////////////////////////////////////////////////////////////////////
     // audio signal to FM modulated phase

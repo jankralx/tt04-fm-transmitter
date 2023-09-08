@@ -27,8 +27,8 @@ module spi_config #(
 
     // configuration values
     output wire [N-1:0] acc_inc,
-    output wire [L-1:0] df_inc_coef,
-    output wire [K-1:0] df_inc_fact,
+    output wire [K-1:0] df_inc_coef,
+    output wire [L-1:0] df_inc_fact,
     output wire [D-1:0] dac_ena,
     output reg [2:0] dith_fact,
 
