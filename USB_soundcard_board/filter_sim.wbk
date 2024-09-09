@@ -1,0 +1,65 @@
+{
+  "last_sch_text_sim_command": "",
+  "tabs": [
+    {
+      "analysis": "AC",
+      "commands": [
+        ".ac dec 1000 10Meg 1G",
+        ".kicad adjustpaths",
+        ".save all",
+        ".probe alli",
+        ".probe allp"
+      ],
+      "dottedSecondary": true,
+      "margins": {
+        "bottom": 45,
+        "left": 70,
+        "right": 70,
+        "top": 30
+      },
+      "measurements": [],
+      "showGrid": true,
+      "traces": [
+        {
+          "color": "rgb(255, 127, 0)",
+          "cursor1": {
+            "position": 69533732.14961535,
+            "x_format": "3~Hz",
+            "y_format": "3~°"
+          },
+          "cursor2": {
+            "position": 138792841.41941375,
+            "x_format": "3~Hz",
+            "y_format": "3~°"
+          },
+          "cursorD": {
+            "x_format": "3~Hz",
+            "y_format": "3~°"
+          },
+          "signal": "V(/sIn) (phase)",
+          "trace_type": 517
+        },
+        {
+          "color": "rgb(77, 175, 74)",
+          "signal": "(V(/sOut)*I(Rs1))/(V(/sIn)*I(V1)) (phase)",
+          "trace_type": 516
+        },
+        {
+          "color": "rgb(77, 175, 74)",
+          "signal": "(V(/sOut)*I(Rs1))/(V(/sIn)*I(V1)) (gain)",
+          "trace_type": 520
+        },
+        {
+          "color": "rgb(228, 26, 28)",
+          "signal": "abs(log((2*V(/sOut)*I(Rs1))/(V(/sIn)*I(V1)))) (gain)",
+          "trace_type": 520
+        }
+      ]
+    }
+  ],
+  "user_defined_signals": [
+    "(V(/sOut)*I(Rs1))/(V(/sIn)*I(V1))",
+    "abs(log((2*V(/sOut)*I(Rs1))/(V(/sIn)*I(V1))))"
+  ],
+  "version": 6
+}

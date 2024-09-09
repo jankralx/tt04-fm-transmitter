@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ProjectLib")(type "KiCad")(uri "${KIPRJMOD}/library/ProjectLib.kicad_sym")(options "")(descr ""))
+  (lib (name "TinyTapeout")(type "KiCad")(uri "${KIPRJMOD}/library/TinyTapeout.kicad_sym")(options "")(descr ""))
+  (lib (name "MCU_RaspberryPi_and_Boards")(type "KiCad")(uri "${KIPRJMOD}/library/MCU_RaspberryPi_and_Boards.kicad_sym")(options "")(descr ""))
+)
