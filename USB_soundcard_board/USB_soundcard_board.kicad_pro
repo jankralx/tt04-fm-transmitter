@@ -58,10 +58,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        "lib_footprint_mismatch|-23749000|145034000|482e5ed4-573d-4f36-9369-fa01e0c94e62|00000000-0000-0000-0000-000000000000",
-        "lib_footprint_mismatch|-37076898|146175967|0fe74ba5-a4e2-4f8d-8614-09040465036a|00000000-0000-0000-0000-000000000000"
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -560,7 +557,7 @@
           "group_by": false,
           "label": "eshop",
           "name": "eshop",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,

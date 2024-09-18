@@ -7598,7 +7598,7 @@
 						)
 					)
 				)
-				(pin bidirectional line
+				(pin power_in line
 					(at 17.78 19.05 180)
 					(length 2.54)
 					(name "GND"
@@ -20677,7 +20677,7 @@
 		(exclude_from_sim yes)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "22ae28b6-a6fc-482e-8d0d-ef19f39d12f9")
 		(property "Reference" "R5"
 			(at 369.57 34.29 0)
@@ -22596,7 +22596,7 @@
 				)
 			)
 		)
-		(property "Value" "663n"
+		(property "Value" "650n"
 			(at 224.79 227.33 90)
 			(effects
 				(font
@@ -22631,7 +22631,7 @@
 				(hide yes)
 			)
 		)
-		(property "eshop" ""
+		(property "eshop" "https://cz.mouser.com/ProductDetail/81-LQW18CNR65J0HD"
 			(at 224.79 229.87 0)
 			(effects
 				(font
@@ -24244,7 +24244,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "3p"
+		(property "Value" "2p7"
 			(at 220.98 256.5462 0)
 			(effects
 				(font
@@ -24308,7 +24308,7 @@
 		(lib_id "Connector_Generic:Conn_02x10_Odd_Even")
 		(at 129.54 71.12 0)
 		(unit 1)
-		(exclude_from_sim no)
+		(exclude_from_sim yes)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
@@ -25610,7 +25610,7 @@
 				)
 			)
 		)
-		(property "Value" "DNP"
+		(property "Value" "0R"
 			(at 212.0963 204.47 90)
 			(effects
 				(font
@@ -26137,7 +26137,7 @@
 		(exclude_from_sim yes)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "634fb8dd-a9a6-4c33-a5a9-cc79acdbc9d6")
 		(property "Reference" "R36"
 			(at 300.355 132.08 90)
@@ -28207,7 +28207,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "3p"
+		(property "Value" "2p7"
 			(at 220.98 234.9562 0)
 			(effects
 				(font
@@ -28629,7 +28629,7 @@
 				)
 			)
 		)
-		(property "Value" "DNP"
+		(property "Value" "0R"
 			(at 237.4963 204.47 90)
 			(effects
 				(font
@@ -29283,7 +29283,7 @@
 		(exclude_from_sim yes)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "9a6ddab3-68b1-47cf-a42d-f9d8b041ed88")
 		(property "Reference" "R35"
 			(at 300.355 129.54 90)
@@ -31317,7 +31317,7 @@
 		(exclude_from_sim yes)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "c18f42b2-1614-4952-9c21-950d061f7076")
 		(property "Reference" "R6"
 			(at 378.46 34.29 0)
@@ -32793,7 +32793,7 @@
 				)
 			)
 		)
-		(property "Value" "DNP"
+		(property "Value" "0R"
 			(at 224.79 205.74 90)
 			(effects
 				(font
@@ -32940,7 +32940,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "191n"
+		(property "Value" "200n"
 			(at 232.41 234.9499 0)
 			(effects
 				(font
@@ -32976,7 +32976,7 @@
 				(hide yes)
 			)
 		)
-		(property "eshop" ""
+		(property "eshop" "https://cz.mouser.com/ProductDetail/81-LQW18ANR20G00D"
 			(at 231.14 233.68 0)
 			(effects
 				(font
