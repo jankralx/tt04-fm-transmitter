@@ -1,0 +1,8 @@
+Measured with Agilent E5071C (300kHz-20GHz).
+
+P1: Filter input
+P2: Filter output
+
+S-parameters in CSVs are in dBs of magnitude.
+
+On P1 the port impedance correction from 50ohm to 1kohm was activated, as the filted is designed for 1kohm source and 50ohm output.
