@@ -11825,6 +11825,12 @@
 		(uuid "a0cfca16-f4d8-4f42-993a-89efe92b79df")
 	)
 	(junction
+		(at 266.7 217.17)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a1362053-0b0d-43f3-8e7f-74afbdf59585")
+	)
+	(junction
 		(at 39.37 223.52)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -12383,16 +12389,6 @@
 			(type default)
 		)
 		(uuid "f076d20b-8e5e-4a07-be3c-b443d54a57a7")
-	)
-	(wire
-		(pts
-			(xy 266.7 217.17) (xy 266.7 218.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "00478b96-cfd9-4d5f-b76a-0bf60778c778")
 	)
 	(wire
 		(pts
@@ -13976,6 +13972,16 @@
 	)
 	(wire
 		(pts
+			(xy 262.89 217.17) (xy 266.7 217.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5f3d76b5-7e11-45c3-bc8a-98a0d05be6c5")
+	)
+	(wire
+		(pts
 			(xy 53.34 233.68) (xy 53.34 236.22)
 		)
 		(stroke
@@ -14013,6 +14019,16 @@
 			(type default)
 		)
 		(uuid "603eac6e-443f-4f88-9afb-49c8cf6e0d4c")
+	)
+	(wire
+		(pts
+			(xy 274.32 217.17) (xy 281.94 217.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "604056cf-ec9e-4380-8a28-d73024b62308")
 	)
 	(wire
 		(pts
@@ -14806,16 +14822,6 @@
 	)
 	(wire
 		(pts
-			(xy 266.7 217.17) (xy 281.94 217.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "91555864-33f0-4aec-9a24-fa1ee68550e8")
-	)
-	(wire
-		(pts
 			(xy 49.53 223.52) (xy 53.34 223.52)
 		)
 		(stroke
@@ -15143,6 +15149,16 @@
 			(type default)
 		)
 		(uuid "a8767c09-87de-46cf-a4da-cb0f1ac6c895")
+	)
+	(wire
+		(pts
+			(xy 266.7 217.17) (xy 269.24 217.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a87944d5-9b42-43d2-8498-0252a2d398b1")
 	)
 	(wire
 		(pts
@@ -15703,6 +15719,16 @@
 			(type default)
 		)
 		(uuid "c859a447-5a99-4039-abc6-19a1e5798b29")
+	)
+	(wire
+		(pts
+			(xy 266.7 217.17) (xy 266.7 218.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c87c7f0d-003c-4a52-8fef-d6044bc6abc0")
 	)
 	(wire
 		(pts
@@ -17580,6 +17606,17 @@
 		)
 		(uuid "2402eba7-bb3e-434c-b37e-2082bc7a096a")
 	)
+	(label "sVolt"
+		(at 262.89 217.17 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2533da04-3263-4488-955e-90c44d244369")
+	)
 	(label "i2c_sda"
 		(at 224.79 43.18 180)
 		(fields_autoplaced yes)
@@ -17823,7 +17860,7 @@
 		(uuid "60d706a2-4b49-4514-9c0c-31faec0fedeb")
 	)
 	(label "sIn"
-		(at 270.51 217.17 0)
+		(at 279.4 217.17 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -25587,6 +25624,83 @@
 			(project "USB_soundcard_board"
 				(path "/167953b6-a2da-4a48-9cbd-ef5a63adcb68"
 					(reference "#PWR061")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Small")
+		(at 271.78 217.17 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5a9deb21-ed1e-461b-b7da-bd8f812f996c")
+		(property "Reference" "Rs2"
+			(at 271.78 212.09 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1000"
+			(at 271.78 214.63 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 271.78 217.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 271.78 217.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor, small symbol"
+			(at 271.78 217.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "eshop" ""
+			(at 271.78 217.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "c51cb42f-20f2-488a-a20b-7adde83c8d21")
+		)
+		(pin "1"
+			(uuid "af883595-e578-4175-be24-dce188dc34af")
+		)
+		(instances
+			(project "USB_soundcard_board"
+				(path "/167953b6-a2da-4a48-9cbd-ef5a63adcb68"
+					(reference "Rs2")
 					(unit 1)
 				)
 			)
