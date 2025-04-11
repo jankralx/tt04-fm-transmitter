@@ -87,7 +87,7 @@ def init_design():
     time.sleep(0.001)
     
     # let the design run
-    pin_nrst(0)
+    pin_nrst(1)
     time.sleep(0.001)
 
 
@@ -95,11 +95,12 @@ if __name__ == "__main__":
     # init SPI and the design in TT04
     spi = machine.SPI(0, baudrate=100000, sck=18, mosi=19, miso=16)
     cs = machine.Pin(17, machine.Pin.OUT)
+    machine.Pin(16, machine.Pin.OUT)
     
     init_design()    
 
     # modulator configuration values
-    wr_cfg = {
+    wr_cfg_10MHz = {
         'ACC_INC': 52429,
         'DF_INC_FACT': 0,
         'MULTIPLY_SEL': 0, 
@@ -110,6 +111,43 @@ if __name__ == "__main__":
         'DF_INC_COEF': 12, 
         'DAC_ENA': 15
     }
+    wr_cfg_1MHz = {
+        'ACC_INC': 5243,
+        'DF_INC_FACT': 0,
+        'MULTIPLY_SEL': 0, 
+        'DITH_FACT': 2, 
+        'SPI_OVERRIDE': 1, 
+        'I2S_WS_ALIGN': 0, 
+        'AUDIO_CHAN_SEL': 0, 
+        'DF_INC_COEF': 12, 
+        'DAC_ENA': 15
+    }
+    wr_cfg_100kHz = {
+        'ACC_INC': 524,
+        'DF_INC_FACT': 0,
+        'MULTIPLY_SEL': 0, 
+        'DITH_FACT': 2, 
+        'SPI_OVERRIDE': 1, 
+        'I2S_WS_ALIGN': 0, 
+        'AUDIO_CHAN_SEL': 0, 
+        'DF_INC_COEF': 12, 
+        'DAC_ENA': 15
+    }
+    wr_cfg_10kHz = {
+        'ACC_INC': 40,
+        'DF_INC_FACT': 0,
+        'MULTIPLY_SEL': 0, 
+        'DITH_FACT': 2, 
+        'SPI_OVERRIDE': 1, 
+        'I2S_WS_ALIGN': 0, 
+        'AUDIO_CHAN_SEL': 0, 
+        'DF_INC_COEF': 12, 
+        'DAC_ENA': 15
+    }
+    
+    
+    wr_cfg = wr_cfg_10kHz
+        
 
     # write and read SPI config
     cs(0)
